@@ -7,8 +7,8 @@ import reactor.core.publisher.Mono;
 @RestController
 class FallBackController {
 
-  @RequestMapping("/fallback")
-  public Mono<String> fallback() {
-    return Mono.just("fallback");
-  }
+    @RequestMapping("/fallback")
+    public Mono<String> fallback() {
+        return Mono.just("fallback");
+    }
 }

@@ -13,31 +13,31 @@ import reactor.core.publisher.Mono;
 @EnableConfigurationProperties(UriConfiguration.class)
 public class ApiGateway {
 
-  public static void main(String[] args) {
-    SpringApplication.run(ApiGateway.class, args);
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(ApiGateway.class, args);
+    }
 
-  @Bean
-  public RouteLocator myRoutes(RouteLocatorBuilder builder, UriConfiguration uriConfiguration) {
-    String httpbinUri = uriConfiguration.getHttpbin();
-    return builder
-        .routes()
-        .route(
-            p -> p.path("/get").filters(f -> f.addRequestHeader("Hello", "World")).uri(httpbinUri))
-        .route(
-            p ->
-                p.host("*.circuitbreaker.com")
-                    .filters(
-                        f ->
-                            f.circuitBreaker(
-                                config ->
-                                    config.setName("mycmd").setFallbackUri("forward:/fallback")))
-                    .uri(httpbinUri))
-        .build();
-  }
+    @Bean
+    public RouteLocator myRoutes(RouteLocatorBuilder builder, UriConfiguration uriConfiguration) {
+        String httpbinUri = uriConfiguration.getHttpbin();
+        return builder
+                .routes()
+                .route(
+                        p -> p.path("/get").filters(f -> f.addRequestHeader("Hello", "World")).uri(httpbinUri))
+                .route(
+                        p ->
+                                p.host("*.circuitbreaker.com")
+                                        .filters(
+                                                f ->
+                                                        f.circuitBreaker(
+                                                                config ->
+                                                                        config.setName("mycmd").setFallbackUri("forward:/fallback")))
+                                        .uri(httpbinUri))
+                .build();
+    }
 
-  @RequestMapping("/fallback")
-  public Mono<String> fallback() {
-    return Mono.just("fallback");
-  }
+    @RequestMapping("/fallback")
+    public Mono<String> fallback() {
+        return Mono.just("fallback");
+    }
 }
